@@ -4,7 +4,7 @@
 
 **Jayson Trinchera**  
 **August 11, 2016**  
-**Last updated 2016-08-12 03:52:36 using R version 3.3.1 (2016-06-21)**  
+**Last updated 2016-08-12 04:37:59 using R version 3.3.1 (2016-06-21)**  
 
 
 # **Introduction**   
@@ -23,8 +23,8 @@ The goals of this project are the following:
 # **Getting Started**  
 In this repository, you will find:  
 
-- **dl_data.R** : an R-script that will download and unzip the data set in your computer
-- **run_analysis.R** : the R-script to be executed on the data set to accomplish the 5 objectives listed above  
+- **dl_data.R** : an R-script that will download and unzip the data set in the directory ./temp/UCI HAR Dataset  
+- **run_analysis.R** : the R-script that will accomplish the 5 objectives listed above provided that the unzipped files are in the directory ./temp/UCI HAR Dataset    
 - **tidy_dataset.txt** : the clean data produced by using run_analysis.R  
 - **CodeBook.md**, **CodeBook.Rmd**, **CodeBook.html** : describes the data, variables, and step-by-step transformations performed by run_analysis.R  
 - **README.md** : this document you are reading now  
@@ -43,16 +43,17 @@ To download the data set for this project, please load and execute **dl_data.R**
 
 
 ```r
-## This downloads the .zip file and places it in a folder named "temp" in the root directory of R
+## this downloads the .zip file and places it in a folder named "temp" in the root directory of R
 
 # if(!file.exists("./temp")){dir.create("./temp")}
 # fileUrl <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 # download.file(fileUrl,destfile="./temp/Dataset.zip")
 
-## This unzips the file inside "temp""
+## this unzips the file inside "temp"
+## the unzipped files will be in the directory ./temp/UCI HAR Dataset 
 
 # unzip(zipfile="./temp/Dataset.zip",exdir="./temp")
 ```
 
 ## **Next Steps**  
-After downloading the data set and unzipping, you may load and execute **run_analysis.R** in R. Detailed information about the code and what it does can be found on: **CodeBook.md**, **CodeBook.Rmd**, or **CodeBook.html**.  
+After downloading the data set and unzipping, you may load and execute **run_analysis.R** in R. Note that this script will only work assuming that the unzipped files are in the directory ./temp/UCI HAR Dataset. Detailed information about the code and what it does can be found on: **CodeBook.md**, **CodeBook.Rmd**, or **CodeBook.html**.  

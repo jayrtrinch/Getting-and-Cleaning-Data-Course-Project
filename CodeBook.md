@@ -4,7 +4,7 @@
 
 **Jayson Trinchera**  
 **August 11, 2016**  
-**Last updated 2016-08-12 04:12:21 using R version 3.3.1 (2016-06-21)**  
+**Last updated 2016-08-12 04:41:38 using R version 3.3.1 (2016-06-21)**  
 
 # **Introduction**   
 The purpose of this project is to demonstrate the ability to collect, work with, and clean a data set. The data set that will be used is a database built from the recordings of 30 volunteers within the age bracket of 19-48 years performing six activities of daily living (walking, walking upstairs, walking downstairs, sitting, standing, laying) while wearing a smartphone (Samsung Galaxy S II) on the waist. More information on the study and the data set is available at the link below.
@@ -20,7 +20,9 @@ The goals of this project are the following:
 5. To creates a second, independent tidy data set with the average of each variable for each activity and each subject.   
 
 # **Step 1: Looking at the Files**  
-The **dl_data.R** script in this repository will download the data set and unzip the files in the directory ./temp/UCI HAR Dataset. First, we'll take a peek at the list of files. The following code does that.  
+If you have not downloaded the files for this project, please do so before proceeding. The **dl_data.R** script in this repository will download the data set and unzip the files in the directory ./temp/UCI HAR Dataset. Note that the script **run_analysis.R** and the succeeding lines of code will only work, assuming that the unzipped files are in the directory ./temp/UCI HAR Dataset.  
+
+First, we'll take a peek at the list of files. The following code does that.  
 
 
 ```r
@@ -1529,7 +1531,7 @@ data2[1:30, 1:3]
 ## 30       5   WALKING_UPSTAIRS                      0.2684595
 ```
 
-# **Step 8: Writing the output to TidyData.txt**  
+# **Step 8: Writing the output to tidy_dataset.txt**  
 Finally, we'll write the aggregated data by "Subject" and "Activity" to a text file.
 
 

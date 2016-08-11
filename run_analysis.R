@@ -1,3 +1,10 @@
+## If you have not downloaded the files for this project, please do so before proceeding. 
+## The dl_data.R script in this repository will download the data set and unzip the files 
+## in the directory ./temp/UCI HAR Dataset. 
+
+## Note that the succeeding lines of code will only work, assuming that the unzipped files 
+## are in the directory ./temp/UCI HAR Dataset.  
+
 
 path <- file.path("./temp" , "UCI HAR Dataset")     # stores filepath
 files<-list.files(path, recursive=TRUE)             # lists all files stored in path

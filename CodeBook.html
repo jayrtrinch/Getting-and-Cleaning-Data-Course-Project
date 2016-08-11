@@ -137,13 +137,13 @@ $(document).ready(function () {
 <li><a href="#step-5-using-descriptive-activity-names-to-name-the-activities-in-the-data-set"><strong>Step 5: Using Descriptive Activity Names to Name the Activities in the Data Set</strong></a></li>
 <li><a href="#step-6-labelling-the-data-set-with-descriptive-variable-names"><strong>Step 6: Labelling the Data Set with Descriptive Variable Names</strong></a></li>
 <li><a href="#step-7-creating-a-second-independent-tidy-data-set-with-the-average-of-each-variable-for-each-activity-and-each-subject"><strong>Step 7: Creating a Second Independent Tidy Data Set with the Average of each Variable for each Activity and each Subject</strong></a></li>
-<li><a href="#step-8-writing-the-output-to-tidydata.txt"><strong>Step 8: Writing the output to TidyData.txt</strong></a></li>
+<li><a href="#step-8-writing-the-output-to-tidy_dataset.txt"><strong>Step 8: Writing the output to tidy_dataset.txt</strong></a></li>
 </ul>
 </div>
 
 <p><strong>Jayson Trinchera</strong><br />
 <strong>August 11, 2016</strong><br />
-<strong>Last updated 2016-08-12 04:12:21 using R version 3.3.1 (2016-06-21)</strong></p>
+<strong>Last updated 2016-08-12 04:41:38 using R version 3.3.1 (2016-06-21)</strong></p>
 <div id="introduction" class="section level1">
 <h1><strong>Introduction</strong></h1>
 <p>The purpose of this project is to demonstrate the ability to collect, work with, and clean a data set. The data set that will be used is a database built from the recordings of 30 volunteers within the age bracket of 19-48 years performing six activities of daily living (walking, walking upstairs, walking downstairs, sitting, standing, laying) while wearing a smartphone (Samsung Galaxy S II) on the waist. More information on the study and the data set is available at the link below.</p>
@@ -163,7 +163,8 @@ $(document).ready(function () {
 </div>
 <div id="step-1-looking-at-the-files" class="section level1">
 <h1><strong>Step 1: Looking at the Files</strong></h1>
-<p>The <strong>dl_data.R</strong> script in this repository will download the data set and unzip the files in the directory ./temp/UCI HAR Dataset. First, we’ll take a peek at the list of files. The following code does that.</p>
+<p>If you have not downloaded the files for this project, please do so before proceeding. The <strong>dl_data.R</strong> script in this repository will download the data set and unzip the files in the directory ./temp/UCI HAR Dataset. Note that the script <strong>run_analysis.R</strong> and the succeeding lines of code will only work, assuming that the unzipped files are in the directory ./temp/UCI HAR Dataset.</p>
+<p>First, we’ll take a peek at the list of files. The following code does that.</p>
 <pre class="r"><code>path &lt;- file.path(&quot;./temp&quot; , &quot;UCI HAR Dataset&quot;)
 files&lt;-list.files(path, recursive=TRUE)
 files</code></pre>
@@ -1513,8 +1514,8 @@ str(data2)</code></pre>
 ## 29       5 WALKING_DOWNSTAIRS                      0.2935439
 ## 30       5   WALKING_UPSTAIRS                      0.2684595</code></pre>
 </div>
-<div id="step-8-writing-the-output-to-tidydata.txt" class="section level1">
-<h1><strong>Step 8: Writing the output to TidyData.txt</strong></h1>
+<div id="step-8-writing-the-output-to-tidy_dataset.txt" class="section level1">
+<h1><strong>Step 8: Writing the output to tidy_dataset.txt</strong></h1>
 <p>Finally, we’ll write the aggregated data by “Subject” and “Activity” to a text file.</p>
 <pre class="r"><code>write.table(data2, file = &quot;tidy_dataset.txt&quot;, row.names = FALSE)</code></pre>
 </div>
