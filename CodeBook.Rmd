@@ -1,0 +1,241 @@
+---
+title: "CodeBook"
+output: 
+  html_document: 
+    keep_md: yes
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Jayson Trinchera**  
+**August 11, 2016**  
+**Last updated `r Sys.time()` using `r R.Version()$version.string`**  
+
+# **Introduction**   
+The purpose of this project is to demonstrate the ability to collect, work with, and clean a data set. The data set that will be used is a database built from the recordings of 30 volunteers within the age bracket of 19-48 years performing six activities of daily living (walking, walking upstairs, walking downstairs, sitting, standing, laying) while wearing a smartphone (Samsung Galaxy S II) on the waist. More information on the study and the data set is available at the link below.
+
+<http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones>
+
+The goals of this project are the following:   
+
+1. To merge the training and the test sets to create one data set   
+2. To extract only the measurements on the mean and standard deviation for each measurement   
+3. To use descriptive activity names to name the activities in the data set   
+4. To appropriately labels the data set with descriptive variable names; and   
+5. To creates a second, independent tidy data set with the average of each variable for each activity and each subject.   
+
+# **Step 1: Looking at the Files**  
+The **dl_data.R** script in this repository will download the data set and unzip the files in the directory ./temp/UCI HAR Dataset. First, we'll take a peek at the list of files. The following code does that.  
+
+```{r listing the files}
+path <- file.path("./temp" , "UCI HAR Dataset")
+files<-list.files(path, recursive=TRUE)
+files
+```
+
+Detailed information about the data set can be found on **./temp/UCI HAR Dataset/README.txt**. For this project, we'll only use the following files and ignore the remainder.  
+
+- **"features.txt"**  
+- **"activity_labels.txt"**  
+- **"train/subject_train.txt"**  
+- **"train/X_train.txt"**  
+- **"train/y_train.txt"** 
+- **"test/subject_test.txt"**   
+- **"test/X_test.txt"**   
+- **"test/y_test.txt"**  
+ 
+# **Step 2: Reading the Files and Making Sense of the Data**  
+We'll read all the above files in to R.    
+
+```{r reading the files}
+features_labels <- read.table(file.path(path, "features.txt" ), header = FALSE, stringsAsFactors = FALSE)
+activity_labels <- read.table(file.path(path, "activity_labels.txt" ), header = FALSE, stringsAsFactors = FALSE)
+subject_train <- read.table(file.path(path, "train/subject_train.txt" ), header = FALSE)
+X_train <- read.table(file.path(path, "train/X_train.txt" ), header = FALSE)
+Y_train <- read.table(file.path(path, "train/Y_train.txt" ), header = FALSE)
+subject_test <- read.table(file.path(path, "test/subject_test.txt" ), header = FALSE)
+X_test <- read.table(file.path(path, "test/X_test.txt" ), header = FALSE)
+Y_test <- read.table(file.path(path, "test/Y_test.txt" ), header = FALSE)
+```
+
+Now, we'll try to make sense of the data based on their structure. We'll look at the objects created above in R one-by-one.  
+
+## **features_labels**  
+The second column of this data frame contains the names of 561 features or measurements obtained in the study. Each of these are the names of the variables that we'd like to set up as column names for our tidy data set. The following description of abbreviations is helpful to understand the naming of these features/variables. More information about these features can be found on **"features_info.txt"**.   
+
+- a prefix of "t" indicates time domain signals  
+- a prefix of "f" indicates frequency domain signals  
+- "Acc" indicates measurements from the smartphone accelerometer which signify linear acceleration  
+- "Gyro" indicates measurements from the smartphone gyroscopic sensor which signify angular velocity    
+- "Body" denotes body acceleration signals  
+- "Gravity"  denotes gravity acceleration signals  
+- "Jerk" signals represent "BodyAcc" or "BodyGyro" as a function of time  
+- "Mag" indicates the magnitude of the three-dimensional signals calculated using the Euclidean norm  
+- the suffixes "-X", "-Y", and "-Z"" denote recordings in the X, Y and Z axes  
+- the following set of suffixes to identify the command/transformation applied: "-mean()", "-std()", "-mad()", "-max()", "-min()", "-sma()", "-energy()", "-iqr()", "-entropy()", "-arCoeff()", "-correlation()", "-maxInds()", "-meanFreq()", "-skewness()", "-kurtosis()", "-bandsEnergy()", and "-angle()".  
+
+``` {r str of features_labels}
+str(features_labels)
+features_labels[[2]]
+```
+
+## **activity_labels**  
+The second column of this data frame contains the names of the six activities of daily living performed by the volunteers while wearing a smartphone on their waists. These six are values/factors of the variable "Activity" that we will setup later in our tidy data set. Later, we will use these names to replace the integer (1 to 6) values recorded in **Y_train** and **Y_test**.  
+
+``` {r str of activity_labels}
+str(activity_labels)
+activity_labels[[2]]
+```
+
+## **subject_train**
+This object contains 7,352 rows of integer values from 1 to 30. Each row identifies the subject who performed the activity for each window sample in the training set. When we assemble our tidy data set later, we'd like the column name of this data frame to be the variable "Subject".  
+
+``` {r str of subject_train}
+str(subject_train)
+unique(subject_train[[1]])
+```
+
+## **X_train**  
+This training set is a data frame of 7,352 rows over 561 columns/variables/features. In our tidy data set, we'll use the **features_labels** above to replace the peculiar column names of this data frame.  
+
+``` {r str of X_train}
+str(X_train)
+```
+
+## **Y_train**  
+This object contains 7,352 rows of integer values from 1 to 6. Each row identifies the type of the variable "Activity" performed for each window sample in the training set. As mentioned above, in our tidy data set, we'll replace these integer values with their respective descriptive names from **activity_labels**. 
+
+``` {r str of Y_train}
+str(Y_train)
+unique(Y_train[[1]])
+```
+
+## **subject_test**
+This object contains 2,947 rows of integer values from 1 to 30. Each row identifies the subject who performed the activity for each window sample in the test set. When we assemble our tidy data set later, we'll append this data frame to the bottom of **subject_train**.  
+
+``` {r str of subject_test}
+str(subject_test)
+unique(subject_test[[1]])
+```
+
+## **X_test**  
+This test set is a data frame of 2,947 rows over 561 columns/variables/features. In our tidy data set, we'll append this data frame to the bottom of **X_train**.  
+
+``` {r str of X_test}
+str(X_test)
+```
+
+## **Y_test**  
+This object contains 2,947 rows of integer values from 1 to 6. Each row identifies the type of the variable "Activity" performed for each window sample in the test set. In our tidy data set, we'll append this column of rows to the bottom of **Y_train**.  
+
+``` {r str of Y_test}
+str(Y_test)
+unique(Y_test[[1]])
+```
+
+# **Step 3: Assembling the Tidy Data Set**  
+First, we'll merge/rbind the components of the training and test sets in respective objects named after the variable that their rows represent.   
+ 
+``` {r rbind}
+Subject <- rbind(subject_train, subject_test)
+Activity <- rbind(Y_train, Y_test)
+Features_561 <- rbind(X_train, X_test)
+```
+
+Then, we'll add the respective column names of **Features_561** from **features_labels**.  
+
+``` {r add feature_labels}
+colnames(Features_561) <- t(features_labels[[2]])
+```
+
+And set the column names of **Subject** and **Activity**.  
+
+``` {r set colnames}
+colnames(Subject) <- "Subject"
+colnames(Activity) <- "Activity"
+```
+
+Then finally cbind **Subject**, **Activity**, and **Features_561** into **data**. At this point, we'll also remove the unnecessary objects in our environment.  
+
+``` {r cbind assembly}
+data <- cbind(Subject, Activity, Features_561)
+rm(subject_train, subject_test, Subject, Activity, Y_train, Y_test, Features_561, X_train, X_test, features_labels)
+str(data)
+```
+
+Before proceeding, it's worth looking whether there are missing values in our assembled data set. In this case, there is no missing data or NAs.  
+
+``` {r checks is.na}
+table(is.na(data))
+```
+
+# **Step 4: Extracting the Mean and Standard Deviation Measurements Applied on the Features**     
+In this step, we want to select the columns with mean or standard deviation of their features. These have "mean()" or "std()" markers in their column names. We'll use **grep()** to add these column names to the object **selected_variable_names**. We'll also retain the "Subject" and "Activity" columns for our tidy data set.
+
+``` {r selects colnames with mean/sd}
+selected_variable_names <- grep(".*mean\\(\\).*|.*std\\(\\).*" ,colnames(data), value = T)
+selected_variable_names <- c("Subject", "Activity", selected_variable_names)
+data <- data[, selected_variable_names]
+str(data)
+```
+
+# **Step 5: Using Descriptive Activity Names to Name the Activities in the Data Set**  
+Recall that the variable "Activity" contains rows of integers from 1 to 6 indicating the type of activity performed. We want to replace these numbers with their respective labels from **activity_labels** and turn the variable class into a factor.  
+
+``` {r replace int in Activity with activity_labels}
+str(data$Activity)
+for (i in 1:6) data[data$Activity == i, 2] <- activity_labels[[2]][[i]]
+data$Activity <- as.factor(data$Activity)
+str(data$Activity)
+head(data$Activity, 50)
+```
+
+# **Step 6: Labelling the Data Set with Descriptive Variable Names**  
+In this step, we'll replace the abbreviated feature/variable names with descriptive names. Recall that:  
+
+- a prefix of "t" indicates *time* domain signals  
+- a prefix of "f" indicates *frequency* domain signals  
+- "Acc" indicates measurements from the smartphone *accelerometer* which signify linear acceleration  
+- "Gyro" indicates measurements from the smartphone *gyroscope* which signify angular velocity    
+- "BodyBody" denotes *body* acceleration signals  
+- "Mag" indicates the *magnitude* of the three-dimensional signals calculated using the Euclidean norm  
+
+We'll use the italicized words as replacement for their respective abbreviations.  
+
+```{r replaces abbreviated colnames}
+names(data)<-gsub("^t", "time", names(data))
+names(data)<-gsub("^f", "frequency", names(data))
+names(data)<-gsub("Acc", "Accelerometer", names(data))
+names(data)<-gsub("Gyro", "Gyroscope", names(data))
+names(data)<-gsub("Mag", "Magnitude", names(data))
+names(data)<-gsub("BodyBody", "Body", names(data))
+names(data)
+```
+
+# **Step 7: Creating a Second Independent Tidy Data Set with the Average of each Variable for each Activity and each Subject**  
+For our tidy data set, we want to collapse the data by "Subject" and "Activity" and show the mean/average for each of the variables/features. We'll do this by using the reshape2 package.  
+
+First, we'll melt the data set so that it'll be restructured into a format in which each measured variable/feature is in its own row along with the ID variables ("Subject" and "Activity").  
+
+Then, we'll reshape the melted data into however we want using a formula and the function mean applied to the aggregated data.  
+
+``` {r melts and casts data set}
+library(reshape2)
+mdata <- melt(data, id = c("Subject", "Activity"))
+str(mdata)
+head(mdata)
+data2 <- dcast(mdata, Subject + Activity ~ variable, mean)
+str(data2)
+data2[1:30, 1:3]
+```
+
+# **Step 8: Writing the output to TidyData.txt**  
+Finally, we'll write the aggregated data by "Subject" and "Activity" to a text file.
+
+``` {r write output}
+write.table(data2, file = "tidy_dataset.txt", row.names = FALSE)
+```
+
