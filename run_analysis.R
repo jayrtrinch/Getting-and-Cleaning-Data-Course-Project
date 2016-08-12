@@ -90,7 +90,7 @@ names(data)
 
 # r melts and casts data set 
 
-library(reshape2)
+if (require(reshape2) == F) install.packages("reshape2")
 mdata <- melt(data, id = c("Subject", "Activity"))
 str(mdata)
 head(mdata)
